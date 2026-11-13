@@ -20,7 +20,7 @@ async function request(method, path, body = null) {
     ...(body ? { body: JSON.stringify(body) } : {}),
   });
 
-  if (res.status === 401) {
+  if (res.status === 401 && path !== '/api/auth/login') {
     localStorage.removeItem('dg_token');
     localStorage.removeItem('dg_user');
     window.location.href = '/login';
@@ -28,8 +28,16 @@ async function request(method, path, body = null) {
   }
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
-    throw new Error(err.detail || `HTTP ${res.status}`);
+    const err = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }));
+    let errorMsg = `HTTP ${res.status}`;
+    if (typeof err.detail === 'string') {
+      errorMsg = err.detail;
+    } else if (Array.isArray(err.detail)) {
+      errorMsg = err.detail.map((d) => d.msg || JSON.stringify(d)).join('; ');
+    } else if (typeof err.message === 'string') {
+      errorMsg = err.message;
+    }
+    throw new Error(errorMsg);
   }
 
   if (res.status === 204) return null;

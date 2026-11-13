@@ -18,7 +18,7 @@ export default function Login() {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(typeof err === 'string' ? err : (err?.message || 'Login failed'));
     } finally {
       setLoading(false);
     }
@@ -104,7 +104,7 @@ export default function Login() {
                 setPassword('DemoAdmin2026!');
                 login('admin@diodeguard.local', 'DemoAdmin2026!')
                   .then(() => navigate('/dashboard'))
-                  .catch((err) => setError(err.message));
+                  .catch((err) => setError(typeof err === 'string' ? err : (err?.message || 'Login failed')));
               }}
               style={{ width: '100%', justifyContent: 'center' }}
             >

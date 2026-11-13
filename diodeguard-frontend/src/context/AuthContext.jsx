@@ -59,6 +59,9 @@ export function AuthProvider({ children }) {
 
     try {
       const data = await auth.login({ email, password });
+      if (!data || !data.access_token) {
+        throw new Error('Invalid credentials');
+      }
       localStorage.setItem('dg_token', data.access_token);
       localStorage.setItem('dg_user', JSON.stringify({ username: data.username, role: data.role }));
       setToken(data.access_token);
