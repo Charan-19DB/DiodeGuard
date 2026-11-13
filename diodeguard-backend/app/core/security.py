@@ -5,6 +5,14 @@ JWT + Password Security Utilities
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
+import bcrypt
+
+# Ensure compatibility between passlib 1.7.4 and bcrypt >= 4.1.0
+if not hasattr(bcrypt, "__about__"):
+    class _BcryptAbout:
+        __version__ = getattr(bcrypt, "__version__", "4.0.1")
+    bcrypt.__about__ = _BcryptAbout()
+
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
