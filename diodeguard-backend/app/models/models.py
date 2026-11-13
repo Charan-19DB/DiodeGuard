@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import (
     Boolean, Column, DateTime, Float, Integer,
-    String, Text, JSON, ForeignKey,
+    String, Text, JSON, ForeignKey, text,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
@@ -20,7 +20,7 @@ def _now():
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, server_default=text("gen_random_uuid()"))
     email = Column(String(255), unique=True, nullable=False, index=True)
     username = Column(String(100), unique=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
@@ -33,7 +33,7 @@ class User(Base):
 class Flow(Base):
     __tablename__ = "flows"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, server_default=text("gen_random_uuid()"))
     flow_id = Column(String(100), unique=True, nullable=False, index=True)
     timestamp = Column(DateTime(timezone=True), nullable=False, index=True)
     src_ip = Column(String(45))
@@ -50,7 +50,7 @@ class Flow(Base):
 class Alert(Base):
     __tablename__ = "alerts"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, server_default=text("gen_random_uuid()"))
     flow_id = Column(String(100), ForeignKey("flows.flow_id"), nullable=False, index=True)
     timestamp = Column(DateTime(timezone=True), nullable=False, index=True)
     threat_class = Column(String(50), nullable=False, index=True)
@@ -73,7 +73,7 @@ class Alert(Base):
 class DetectionModel(Base):
     __tablename__ = "detection_models"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, server_default=text("gen_random_uuid()"))
     name = Column(String(100), nullable=False)
     threat_class = Column(String(50), nullable=False)
     version = Column(String(50), nullable=False)

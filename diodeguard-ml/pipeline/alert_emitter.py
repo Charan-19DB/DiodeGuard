@@ -64,6 +64,8 @@ def init_tables():
         # Ensure migration consistency if tables already existed
         conn.execute(text("ALTER TABLE alerts ADD COLUMN IF NOT EXISTS acknowledged_by UUID;"))
         conn.execute(text("ALTER TABLE alerts ADD COLUMN IF NOT EXISTS acknowledged_at TIMESTAMPTZ;"))
+        conn.execute(text("ALTER TABLE flows ALTER COLUMN id SET DEFAULT gen_random_uuid();"))
+        conn.execute(text("ALTER TABLE alerts ALTER COLUMN id SET DEFAULT gen_random_uuid();"))
         conn.commit()
     print("[AlertEmitter] Tables ensured.")
 
@@ -101,12 +103,13 @@ def emit_flow(flow: dict):
     """Upsert a flow record."""
     sql = text("""
         INSERT INTO flows
-            (flow_id, timestamp, src_ip, dst_ip, src_port, dst_port, protocol, features)
+            (id, flow_id, timestamp, src_ip, dst_ip, src_port, dst_port, protocol, features)
         VALUES
-            (:flow_id, :timestamp, :src_ip, :dst_ip, :src_port, :dst_port, :protocol, :features)
+            (:id, :flow_id, :timestamp, :src_ip, :dst_ip, :src_port, :dst_port, :protocol, :features)
         ON CONFLICT (flow_id) DO NOTHING
     """)
     params = {
+        "id": flow.get("id", str(uuid.uuid4())),
         "flow_id": flow["flow_id"],
         "timestamp": flow.get("timestamp", datetime.now(timezone.utc).isoformat()),
         "src_ip": flow.get("src_ip"),
