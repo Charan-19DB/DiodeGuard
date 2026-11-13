@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.env
+datasets/raw/
+datasets/processed/
+models/saved/
+data/
+*.pcap
+*.parquet
+*.joblib
+.pytest_cache/
+.coverage
+htmlcov/

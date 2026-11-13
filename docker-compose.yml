@@ -1,0 +1,96 @@
+version: '3.9'
+
+services:
+  # ─── Infrastructure ──────────────────────────────────────────────
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks: [dg-net]
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    depends_on: [zookeeper]
+    ports: ['9092:9092']
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks: [dg-net]
+
+  redis:
+    image: redis:7.2-alpine
+    ports: ['6379:6379']
+    networks: [dg-net]
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: diodeguard
+      POSTGRES_USER: diodeguard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    ports: ['5432:5432']
+    volumes: [pg-data:/var/lib/postgresql/data]
+    networks: [dg-net]
+
+  # ─── ML Pipeline ─────────────────────────────────────────────────
+  ml-pipeline:
+    build:
+      context: ./diodeguard-ml
+      dockerfile: Dockerfile
+    depends_on: [kafka, redis, postgres]
+    environment:
+      POSTGRES_URL: postgresql://diodeguard:${POSTGRES_PASSWORD:-password}@postgres:5432/diodeguard
+      KAFKA_BOOTSTRAP: kafka:9092
+      REDIS_URL: redis://redis:6379
+      ALERT_CONFIDENCE_THRESHOLD: 0.75
+    networks: [dg-net]
+    restart: on-failure
+
+  # ─── Traffic Generator (Continuous Diode Flow Producer) ──────────
+  traffic-generator:
+    build:
+      context: ./diodeguard-ml
+      dockerfile: Dockerfile
+    command: ["python", "traffic_sim/continuous_producer.py"]
+    depends_on: [kafka]
+    environment:
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_TOPIC: diodeguard-flows
+      FLOW_RATE: 4.0
+    networks: [dg-net]
+    restart: on-failure
+
+  # ─── Backend API ─────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./diodeguard-backend
+      dockerfile: Dockerfile
+    depends_on: [postgres]
+    ports: ['8000:8000']
+    environment:
+      POSTGRES_URL: postgresql://diodeguard:${POSTGRES_PASSWORD:-password}@postgres:5432/diodeguard
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRE_MINUTES: 60
+      BACKEND_CORS_ORIGINS: '["http://localhost:5173","http://frontend:5173"]'
+    networks: [dg-net]
+    restart: on-failure
+
+  # ─── Frontend ────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./diodeguard-frontend
+      dockerfile: Dockerfile
+    depends_on: [backend]
+    ports: ['5173:80']
+    networks: [dg-net]
+
+volumes:
+  pg-data:
+
+networks:
+  dg-net:
+    driver: bridge

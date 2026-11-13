@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiodeGuard — Technical Whitepaper & Strategic System Plan</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --secondary: #6366f1;
+      --accent: #0f172a;
+      --bg: #ffffff;
+      --card-bg: #f8fafc;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --code-bg: #f1f5f9;
+      
+      --crit: #ef4444;
+      --high: #f97316;
+      --med: #eab308;
+      --low: #10b981;
+    }
+
+    @page {
+      size: A4;
+      margin: 16mm 14mm 16mm 14mm;
+      @bottom-right {
+        content: counter(page);
+        font-family: 'Inter', sans-serif;
+        font-size: 8pt;
+        color: #94a3b8;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      color: var(--text);
+      background-color: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .cover-page {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      background: linear-gradient(145deg, #f8fafc 0%, #ffffff 100%);
+      page-break-after: always;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+
+    .cover-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-badge {
+      width: 54px;
+      height: 54px;
+      background: linear-gradient(135deg, #0ea5e9, #4f46e5);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 26px;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+
+    .org-tag {
+      font-size: 8.5pt;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .title-group {
+      margin-top: 40px;
+    }
+
+    .main-title {
+      font-size: 30pt;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #0f172a;
+      letter-spacing: -0.8px;
+    }
+
+    .subtitle {
+      font-size: 14pt;
+      font-weight: 500;
+      color: #0284c7;
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    .theme-badge {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 6px 14px;
+      background: #e0f2fe;
+      color: #0369a1;
+      border-radius: 20px;
+      font-size: 9pt;
+      font-weight: 600;
+    }
+
+    .cover-abstract {
+      margin-top: 30px;
+      padding: 20px;
+      background: #ffffff;
+      border-left: 4px solid #0284c7;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .cover-abstract h4 {
+      font-size: 10.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #0369a1;
+      margin-bottom: 8px;
+    }
+
+    .cover-abstract p {
+      font-size: 10pt;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .cover-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-item {
+      font-size: 9pt;
+    }
+
+    .meta-label {
+      color: #64748b;
+      text-transform: uppercase;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+    }
+
+    .meta-val {
+      font-weight: 600;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    /* Page Content Formatting */
+    .page {
+      padding: 10px 0;
+    }
+
+    .page-break {
+      page-break-after: always;
+    }
+
+    h2 {
+      font-size: 16pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 26px;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 {
+      font-size: 12pt;
+      font-weight: 600;
+      color: #0369a1;
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    li {
+      margin-bottom: 6px;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    /* Callout & Alert Blocks */
+    .callout {
+      padding: 14px 18px;
+      border-radius: 8px;
+      background: #f0f9ff;
+      border-left: 4px solid #0284c7;
+      margin: 16px 0;
+      font-size: 9.5pt;
+      line-height: 1.55;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 4px;
+      font-size: 10pt;
+    }
+
+    .callout.warning {
+      background: #fef2f2;
+      border-left-color: #ef4444;
+    }
+
+    .callout.warning .callout-title {
+      color: #b91c1c;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 9pt;
+      break-inside: avoid;
+    }
+
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 600;
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 8.5pt;
+      letter-spacing: 0.3px;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      color: #334155;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 7.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .badge-crit { background: #fee2e2; color: #dc2626; }
+    .badge-high { background: #ffedd5; color: #ea580c; }
+    .badge-med { background: #fef9c3; color: #ca8a04; }
+    .badge-low { background: #dcfce7; color: #16a34a; }
+    .badge-track { background: #e0e7ff; color: #4338ca; }
+
+    /* Code & Mono */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5pt;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 14px 0;
+      line-height: 1.45;
+      break-inside: avoid;
+    }
+
+    /* Architecture Box Grid */
+    .arch-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 18px 0;
+      break-inside: avoid;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .flow-card {
+      flex: 1;
+      padding: 12px 14px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .flow-card.accent {
+      border-color: #0284c7;
+      background: #f0f9ff;
+    }
+
+    .flow-card.highlight {
+      border-color: #6366f1;
+      background: #f5f3ff;
+    }
+
+    .flow-card h5 {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+
+    .flow-card p {
+      font-size: 8pt;
+      color: #64748b;
+      margin: 0;
+    }
+
+    .flow-arrow {
+      font-size: 14pt;
+      color: #94a3b8;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 14px 0;
+      break-inside: avoid;
+    }
+
+    .summary-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      background: #f8fafc;
+    }
+
+    .summary-card h4 {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 6px;
+    }
+
+    .summary-card p {
+      font-size: 8.5pt;
+      color: #475569;
+      margin: 0;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER PAGE -->
+  <div class="cover-page">
+    <div>
+      <div class="cover-header">
+        <div class="logo-badge">🛡️</div>
+        <div>
+          <div class="org-tag">National Technical Research Organisation (NTRO) · SIH26145</div>
+          <div style="font-size: 11pt; font-weight: 700; color: #0f172a;">Smart India Hackathon · Prototype Submission</div>
+        </div>
+      </div>
+
+      <div class="title-group">
+        <h1 class="main-title">DiodeGuard</h1>
+        <div class="subtitle">AI-Based Detection of Cyber Threats in Unidirectional IP Traffic</div>
+        <div class="theme-badge">Theme: Blockchain & Cybersecurity · Critical Infrastructure Protection</div>
+      </div>
+
+      <div class="cover-abstract">
+        <h4>Executive Abstract</h4>
+        <p>
+          Hardware data diodes provide physical Layer-1 assurance that data cannot flow backwards into high-security network enclaves. However, eliminating return packets renders standard bidirectional security mechanisms (TCP handshake tracking, active probing, inline IPS) entirely inoperative. 
+        </p>
+        <p style="margin-top: 8px;">
+          <strong>DiodeGuard</strong> introduces a purpose-built AI threat detection architecture specifically optimized for unidirectional IP streams. Operating strictly within a passive, zero-egress enclave, DiodeGuard leverages forward-flow behavioral feature extraction, in-memory sliding-window state tracking, and six specialized machine learning models to detect volumetric DDoS, botnet C2 beaconing, DGA tunneling, encrypted malware, reconnaissance, and covert data exfiltration in real-time.
+        </p>
+      </div>
+    </div>
+
+    <div class="cover-meta">
+      <div class="meta-item">
+        <div class="meta-label">Problem Statement</div>
+        <div class="meta-val">SIH26145 — NTRO Unidirectional IP Threat Detection</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Architecture Paradigm</div>
+        <div class="meta-val">3-Track Decoupled System (ML, REST API, SOC UI)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Security Guarantee</div>
+        <div class="meta-val">Zero-Return Packet Egress & SHA-256 Model Integrity</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Document Version & Date</div>
+        <div class="meta-val">Version 1.0.0 · October 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS & PROBLEM STATEMENT -->
+  <div class="page">
+    <h2>1. The Problem Statement & The Unidirectional Dilemma</h2>
+    
+    <h3>1.1 What is a Hardware Data Diode?</h3>
+    <p>
+      A hardware data diode is a physical cybersecurity appliance that enforces strictly one-way information flow. It couples a transmit photodiode to an optical fiber receiver, with the transmit optical pin physically excised on the receiving enclave side. This guarantees, at the physical laws of optics, that no packet, electrical pulse, or signal can ever travel backwards across the diode boundary.
+    </p>
+
+    <div class="callout warning">
+      <div class="callout-title">The Fundamental Cyber Dilemma in Data Diode Enclaves</div>
+      Standard Network Intrusion Detection Systems (NIDS) like Snort, Suricata, and Zeek, as well as stateful firewalls and inline IPS engines, are architected on <strong>bidirectional conversational assumptions</strong>:
+      <ul>
+        <li>They verify TCP 3-way handshakes (<code>SYN</code> &rarr; <code>SYN-ACK</code> &rarr; <code>ACK</code>) before creating connection states.</li>
+        <li>They calculate bidirectional round-trip times (RTT), window sizes, and payload client-to-server ratios.</li>
+        <li>They use active probing, TCP resets (<code>RST</code>), and honeypots to verify adversary behaviors.</li>
+      </ul>
+      When deployed across a unidirectional tap, <strong>traditional tools see only forward packets</strong>. As a result, they either flood security teams with false "half-open connection" alerts or miss sophisticated stealth attacks entirely.
+    </div>
+
+    <h3>1.2 How DiodeGuard Overcomes the Unidirectional Constraint</h3>
+    <p>DiodeGuard replaces bidirectional state dependency with four core engineering innovations:</p>
+    <ul>
+      <li><strong>Forward-Only Feature Extraction:</strong> Computes statistical metrics (Shannon entropy, packet-size variance, inter-arrival variance, protocol ratios) solely from unidirectional ingress packets.</li>
+      <li><strong>Sliding-Window Temporal State (Redis):</strong> Maintains rolling 5-minute state across source IPs without requiring connection-teardown packets (<code>FIN</code>/<code>RST</code>).</li>
+      <li><strong>Multi-Model AI Taxonomy:</strong> Deploys six tailored machine learning algorithms trained specifically on forward-flow telemetry.</li>
+      <li><strong>Zero-Egress SOC Dashboard:</strong> Delivers instantaneous threat visualization, evidence inspection, and acknowledgement without initiating reverse network probes.</li>
+    </ul>
+
+    <h2>2. System Architecture & The Three Tracks</h2>
+    <p>
+      DiodeGuard is organized into three decoupled repositories to enable parallel development, independent unit testing, and isolated container orchestration:
+    </p>
+
+    <!-- ARCHITECTURE DIAGRAM -->
+    <div class="arch-flow">
+      <div class="flow-row">
+        <div class="flow-card">
+          <h5>Monitored / High-Security Network</h5>
+          <p>Industrial Control System / Defense Grid / SCADA</p>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-card accent">
+          <h5>Hardware Data Diode (Rx-Only)</h5>
+          <p>Optical fiber isolation · Physical Layer 1 enforcement</p>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-card">
+          <h5>Passive Enclave Ingest</h5>
+          <p>NFStream / Scapy PCAP replayer &rarr; Kafka broker</p>
+        </div>
+      </div>
+      <div class="flow-row" style="justify-content: center;">
+        <div class="flow-arrow">&darr; <code>unidirectional-traffic</code> (Kafka Topic)</div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-card highlight">
+          <h5>Track A: ML Engine (`diodeguard-ml`)</h5>
+          <p>Feature extraction · 6 AI models · Redis sliding window</p>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-card">
+          <h5>Track B: Backend API (`diodeguard-backend`)</h5>
+          <p>FastAPI · PostgreSQL ORM · JWT Auth · Alert CRUD</p>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-card accent">
+          <h5>Track C: SOC Dashboard (`diodeguard-frontend`)</h5>
+          <p>React 19 · Recharts telemetry · Alert triage · Mock mode</p>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Track</th>
+          <th>Directory</th>
+          <th>Primary Mandate</th>
+          <th>Core Tech Stack</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-track">Track A</span></td>
+          <td><code>diodeguard-ml</code></td>
+          <td>Traffic simulation, stream replay, NFStream extraction, Redis sliding window, 6 ML models, Kafka consumer</td>
+          <td>Python 3.11, NFStream, Scapy, Scikit-learn, LightGBM, Redis, Kafka, Joblib</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-track">Track B</span></td>
+          <td><code>diodeguard-backend</code></td>
+          <td>FastAPI REST service, relational database ORM, Alembic migrations, JWT Auth, RBAC, flow/alert lifecycle</td>
+          <td>FastAPI, SQLAlchemy, Alembic, PostgreSQL 16, Pydantic, PyJWT, Passlib</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-track">Track C</span></td>
+          <td><code>diodeguard-frontend</code></td>
+          <td>Real-time SOC analyst dashboard, threat telemetry charts, alert management, offline simulation mode</td>
+          <td>React 19, Vite 8, Recharts, React Router v7, Pure Vanilla CSS, Nginx</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 3: ML TAXONOMY -->
+  <div class="page">
+    <h2>3. Machine Learning Detection Models & Threat Taxonomy</h2>
+    <p>
+      DiodeGuard features six specialized threat detection models configured with strict confidence thresholds (default: <code>&ge; 0.75</code>) and severity tier mappings:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Threat Class</th>
+          <th>Paradigm</th>
+          <th>Algorithm</th>
+          <th>Target Threat Behaviors</th>
+          <th>Key Input Features</th>
+          <th>Severity Tiers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>DDoS</strong></td>
+          <td>Supervised</td>
+          <td>Random Forest (200 trees) / LightGBM</td>
+          <td>SYN floods, UDP surges, volumetric bandwidth saturation</td>
+          <td><code>packets_per_sec</code>, <code>bytes_per_sec</code>, <code>src_ip_entropy</code>, <code>syn_ratio</code></td>
+          <td><span class="badge badge-med">Med: 0.75</span> <span class="badge badge-high">High: 0.85</span> <span class="badge badge-crit">Crit: >0.92</span></td>
+        </tr>
+        <tr>
+          <td><strong>Botnet C2</strong></td>
+          <td>Supervised + Temporal</td>
+          <td>Random Forest + Redis Windowing</td>
+          <td>Periodic beaconing pulses, Cobalt Strike, Mirai heartbeats</td>
+          <td><code>inter_arrival_mean</code>, <code>inter_arrival_cv</code>, <code>flow_count_per_src_5min</code></td>
+          <td><span class="badge badge-med">Med: 0.75</span> <span class="badge badge-high">High: 0.85</span> <span class="badge badge-crit">Crit: >0.92</span></td>
+        </tr>
+        <tr>
+          <td><strong>DGA / DNS</strong></td>
+          <td>Lexical Supervised</td>
+          <td>Random Forest (300 trees)</td>
+          <td>Domain Generation Algorithms, DNS data tunneling</td>
+          <td><code>domain_length</code>, <code>digit_ratio</code>, <code>entropy</code>, <code>n_gram_score</code></td>
+          <td><span class="badge badge-med">Med: 0.75</span> <span class="badge badge-high">High: 0.85</span> <span class="badge badge-crit">Crit: >0.92</span></td>
+        </tr>
+        <tr>
+          <td><strong>Encrypted Malware</strong></td>
+          <td>Metadata Supervised</td>
+          <td>Random Forest + JA3 Fingerprinting</td>
+          <td>Trojan/ransomware TLS sessions without payload decryption</td>
+          <td><code>ja3_known_bad</code>, <code>cert_validity_days</code>, <code>sni_entropy</code>, <code>packet_size_std</code></td>
+          <td><span class="badge badge-med">Med: 0.75</span> <span class="badge badge-high">High: 0.85</span> <span class="badge badge-crit">Crit: >0.92</span></td>
+        </tr>
+        <tr>
+          <td><strong>Reconnaissance</strong></td>
+          <td>Unsupervised Anomaly</td>
+          <td>Isolation Forest (contam=0.05)</td>
+          <td>Horizontal/vertical port scans, stealth SYN sweeps</td>
+          <td><code>unique_dst_ports</code>, <code>unique_dst_ips</code>, <code>syn_no_ack_ratio</code>, <code>scan_rate</code></td>
+          <td><span class="badge badge-med">Med: 0.75</span> <span class="badge badge-high">High: 0.85</span> <span class="badge badge-crit">Crit: >0.92</span></td>
+        </tr>
+        <tr>
+          <td><strong>Data Exfiltration</strong></td>
+          <td>Unsupervised Anomaly</td>
+          <td>Extended Isolation Forest</td>
+          <td>Covert HTTP POST dumps, large payload spills</td>
+          <td><code>upload_bytes</code>, <code>upload_download_ratio</code>, <code>entropy_payload</code>, <code>post_ratio</code></td>
+          <td><span class="badge badge-med">Med: 0.75</span> <span class="badge badge-high">High: 0.85</span> <span class="badge badge-crit">Crit: >0.92</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="two-col">
+      <div class="summary-card">
+        <h4>Redis Sliding-Window State Manager</h4>
+        <p>
+          In unidirectional networks, hosts cannot send <code>TCP FIN</code> or <code>RST</code> flags to mark flow completion. DiodeGuard implements an in-memory sliding-window state manager using Redis sorted sets (<code>flows:&lt;src_ip&gt;</code>). It tracks rolling 300-second flow counters, packet rates, unique destination port carding, and Shannon entropy dynamically with atomic pipelines.
+        </p>
+      </div>
+      <div class="summary-card">
+        <h4>Cryptographic Model Integrity (SHA-256)</h4>
+        <p>
+          To safeguard against adversarial model tampering in isolated enclaves, every serialized model (<code>.joblib</code>) has a companion <code>_hash.txt</code> file containing its SHA-256 digest. Upon startup, <code>detector.py</code> verifies the file bytes against the digest before loading the pipeline, halting startup if any tampering is detected.
+        </p>
+      </div>
+    </div>
+
+    <h2>4. Comprehensive Technology Stack Breakdown</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Component</th>
+          <th>Version</th>
+          <th>Architectural Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="3"><strong>Ingestion & Messaging</strong></td>
+          <td><strong>Scapy</strong></td>
+          <td>2.5.0</td>
+          <td>Synthetic PCAP generation and realistic attack replay</td>
+        </tr>
+        <tr>
+          <td><strong>NFStream</strong></td>
+          <td>6.5.3</td>
+          <td>Fast L7 protocol parsing and flow behavioral feature extraction</td>
+        </tr>
+        <tr>
+          <td><strong>Apache Kafka</strong></td>
+          <td>7.6.1</td>
+          <td>Decoupled streaming ingestion buffer (Topic: <code>unidirectional-traffic</code>)</td>
+        </tr>
+        <tr>
+          <td rowspan="3"><strong>Machine Learning</strong></td>
+          <td><strong>Scikit-learn</strong></td>
+          <td>1.4.1</td>
+          <td>Random Forest and Isolation Forest classifiers for real-time scoring</td>
+        </tr>
+        <tr>
+          <td><strong>Redis</strong></td>
+          <td>7.2</td>
+          <td>In-memory temporal sliding-window state and entropy tracking</td>
+        </tr>
+        <tr>
+          <td><strong>Joblib & NumPy</strong></td>
+          <td>1.3.2 / 2.2</td>
+          <td>Fast vectorized feature calculations and model pipeline serialization</td>
+        </tr>
+        <tr>
+          <td rowspan="3"><strong>Backend & Persistence</strong></td>
+          <td><strong>FastAPI & Uvicorn</strong></td>
+          <td>0.110.0</td>
+          <td>Asynchronous REST API with auto-generated OpenAPI documentation</td>
+        </tr>
+        <tr>
+          <td><strong>SQLAlchemy & Alembic</strong></td>
+          <td>2.0 / 1.13</td>
+          <td>Object Relational Mapping and automated database migrations</td>
+        </tr>
+        <tr>
+          <td><strong>PostgreSQL</strong></td>
+          <td>16-alpine</td>
+          <td>Persistent relational storage for flows, threats, alerts, and users</td>
+        </tr>
+        <tr>
+          <td rowspan="3"><strong>Frontend & SOC UI</strong></td>
+          <td><strong>React & Vite</strong></td>
+          <td>19.0 / 8.0</td>
+          <td>High-performance single page application for SOC operations</td>
+        </tr>
+        <tr>
+          <td><strong>Recharts</strong></td>
+          <td>2.12.0</td>
+          <td>Interactive charts: live timeline, threat radar, throughput telemetry</td>
+        </tr>
+        <tr>
+          <td><strong>Vanilla CSS Design</strong></td>
+          <td>Cyber Dark</td>
+          <td>Custom cyber-sovereign dark theme with glassmorphism and animations</td>
+        </tr>
+        <tr>
+          <td><strong>Orchestration</strong></td>
+          <td><strong>Docker Compose</strong></td>
+          <td>v3.9</td>
+          <td>Single-command orchestration of 7 containerized services</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 5: HOW IT IS USEFUL & ROADMAP -->
+  <div class="page">
+    <h2>5. How DiodeGuard is Useful (Value Proposition & Operational Impact)</h2>
+
+    <div class="two-col">
+      <div class="summary-card">
+        <h4>1. 100% Zero-Egress Physical Safety</h4>
+        <p>
+          Guarantees zero packet emissions or optical transmissions back into the monitored network. Protects sensitive air-gapped networks from side-channel signaling or leakage.
+        </p>
+      </div>
+      <div class="summary-card">
+        <h4>2. Critical Infrastructure Protection (CNI)</h4>
+        <p>
+          Enables real-time intrusion monitoring for SCADA/ICS grids, nuclear facilities, defense command systems, and financial backbones without endangering operational control.
+        </p>
+      </div>
+      <div class="summary-card">
+        <h4>3. Explainable Threat Provenance</h4>
+        <p>
+          Every emitted alert includes top contributing feature weights, confidence metrics, and heuristic flags (e.g., <code>HIGH_SYN_BURST</code>), empowering SOC analysts to triage incidents immediately.
+        </p>
+      </div>
+      <div class="summary-card">
+        <h4>4. Encrypted Malware Detection</h4>
+        <p>
+          Identifies malware communicating over TLS 1.2/1.3 using JA3 fingerprint catalogs, SNI entropy, and packet size distributions without requiring payload decryption.
+        </p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Operational Efficiency via Offline Simulation Mode</div>
+      DiodeGuard features an integrated mock telemetry generator (<code>VITE_USE_MOCK=true</code>). This enables immediate analyst training, offline demonstrations, and red-team drills without needing live network access or infrastructure dependencies.
+    </div>
+
+    <h2>6. Strategic Implementation Roadmap</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Milestone</th>
+          <th>Key Deliverables</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Phase 1</strong></td>
+          <td>Prototype Validation & Model Tuning</td>
+          <td>3-Track architecture, 6 trained AI models, Kafka & Redis pipeline, SOC dashboard, Docker Compose stack</td>
+          <td><span class="badge badge-low">Completed & Verified</span></td>
+        </tr>
+        <tr>
+          <td><strong>Phase 2</strong><br><small>Months 1–3</small></td>
+          <td>Hardware Enclave & Optical Tap Integration</td>
+          <td>Integration with physical commercial data diodes (Advenica/Owl/NTRO custom), 10G optical line testing</td>
+          <td><span class="badge badge-track">Scheduled</span></td>
+        </tr>
+        <tr>
+          <td><strong>Phase 3</strong><br><small>Months 4–6</small></td>
+          <td>eBPF & Line-Rate Kernel Bypass Ingestion</td>
+          <td>eBPF/DPDK flow capture engine, Redis clustering for 1M+ flows, online semi-supervised model adaptation</td>
+          <td><span class="badge badge-track">Scheduled</span></td>
+        </tr>
+        <tr>
+          <td><strong>Phase 4</strong><br><small>Months 7–12</small></td>
+          <td>Production Hardening & FIPS Compliance</td>
+          <td>FIPS 140-3 cryptographic validation, outbound STIX/TAXII threat intel sharing, full air-gap compliance</td>
+          <td><span class="badge badge-track">Scheduled</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>7. Quick Start & Verification</h2>
+    <p>Launch the entire 7-service stack with a single command:</p>
+    <pre><code>docker compose up --build</code></pre>
+    <p><strong>System Service Endpoints:</strong></p>
+    <ul>
+      <li><strong>SOC Analyst Dashboard:</strong> <code>http://localhost:5173</code></li>
+      <li><strong>FastAPI Swagger Documentation:</strong> <code>http://localhost:8000/docs</code></li>
+      <li><strong>PostgreSQL Database:</strong> <code>localhost:5432</code> (DB: <code>diodeguard</code>, User: <code>diodeguard</code>)</li>
+      <li><strong>Kafka Broker:</strong> <code>localhost:9092</code> | <strong>Redis Cache:</strong> <code>localhost:6379</code></li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-title">Default Demo Credentials</div>
+      When accessing the React Dashboard, log in with:<br>
+      <strong>Email:</strong> <code>admin@diodeguard.local</code> &nbsp;|&nbsp; <strong>Password:</strong> <code>DemoAdmin2026!</code><br>
+      Or click the <strong>"Instant Demo Access (Admin)"</strong> button on the login screen.
+    </div>
+  </div>
+
+</body>
+</html>
